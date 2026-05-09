@@ -99,7 +99,7 @@ const RegisterDeveloper = () => {
               value={formik.values.fullName}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              placeholder="Cynthia Omisore"
+              placeholder="Sandra Creasy"
               className={`bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched.fullName && formik.errors.fullName
                   ? 'border-red-500 focus:border-red-500'
                   : 'border-gray-700 focus:border-indigo-500'
@@ -119,7 +119,7 @@ const RegisterDeveloper = () => {
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              placeholder="cynthia@example.com"
+              placeholder="creasy@example.com"
               className={`bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched.email && formik.errors.email
                   ? 'border-red-500 focus:border-red-500'
                   : 'border-gray-700 focus:border-indigo-500'

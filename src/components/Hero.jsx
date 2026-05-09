@@ -20,13 +20,13 @@ const navigate = useNavigate()
           <div className="flex items-center gap-4">
               <button
                   onClick={() => navigate('/register/developer')}
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition"
+                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition md:text-sm"
               >
                   I am a Developer <ArrowRight size={18} />
               </button>
               <button
                   onClick={() => navigate('/register/company')}
-                  className="flex items-center gap-2 border border-gray-600 hover:border-indigo-500 text-gray-300 hover:text-white font-semibold px-6 py-3 rounded-lg transition"
+                  className="flex items-center gap-2 border border-gray-600 hover:border-indigo-500 text-gray-300 hover:text-white font-semibold px-6 py-3 rounded-lg transition md:text-sm"
               >
                   I am Hiring <Briefcase size={18} />
               </button>
