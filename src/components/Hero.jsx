@@ -14,7 +14,7 @@ const navigate = useNavigate()
               Connect the right developers with the right companies
           </h2>
           <p className="text-gray-400 text-lg max-w-xl mb-10">
-              Devlytic uses AI to match developers to jobs based on their actual skills —
+              Devlytic uses AI to match developers to jobs based on their actual skills
               not just keywords. Built for modern hiring.
           </p>
           <div className="flex items-center gap-4">

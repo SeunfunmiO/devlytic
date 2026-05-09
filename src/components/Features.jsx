@@ -6,7 +6,7 @@ const features = [
         icon: <Zap size={24} className="text-indigo-500" />,
         title: 'AI-Powered Matching',
         description:
-            'Our AI scores how well a developer fits a role and explains why — no more guesswork.',
+            'Our AI scores how well a developer fits a role and explains why no more guesswork.',
     },
     {
         icon: <Briefcase size={24} className="text-indigo-500" />,
