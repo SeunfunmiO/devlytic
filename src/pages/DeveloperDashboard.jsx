@@ -63,7 +63,7 @@ const DeveloperDashboard = () => {
             }
         };
         if (!user?.fullName) loadDeveloper();
-    }, []);
+    }, [dispatch,user?.fullName]);
 
     const handleLogout = async () => {
         try {
