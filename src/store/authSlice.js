@@ -2,9 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   user: null,
-  role: null, // "developer" | "company"
+  role: null, //developer/company
   accessToken: null,
   isAuthenticated: false,
+  isInitializing: true,
   loading: false,
   error: null,
 };
@@ -16,8 +17,14 @@ const authSlice = createSlice({
     setCredentials: (state, action) => {
       state.user = action.payload.user;
       state.role = action.payload.role;
-      state.accessToken = action.payload.accessToken;
+      if (action.payload.accessToken) {
+        state.accessToken = action.payload.accessToken;
+      }
       state.isAuthenticated = true;
+      state.isInitializing = false;
+    },
+    setInitialized: (state) => {
+      state.isInitializing = false;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -30,10 +37,11 @@ const authSlice = createSlice({
       state.role = null;
       state.accessToken = null;
       state.isAuthenticated = false;
+      state.isInitializing = false;
       state.error = null;
     },
   },
 });
 
-export const { setCredentials, setLoading, setError, logout } = authSlice.actions;
+export const { setCredentials, setInitialized, setLoading, setError, logout } = authSlice.actions;
 export default authSlice.reducer;

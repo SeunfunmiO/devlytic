@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setCredentials, logout } from '../store/authSlice';
+import { setCredentials, logout, setInitialized } from '../store/authSlice';
 import { fetchDeveloper, fetchCompany } from '../services/fetchService';
 import { refreshTokenService } from '../services/authService';
 
@@ -11,13 +11,16 @@ const useAuthInit = () => {
         const init = async () => {
             const refreshToken = localStorage.getItem('refreshToken');
 
-            if (!refreshToken) return;
+            if (!refreshToken) {
+                dispatch(setInitialized());
+                return;
+            }
 
             try {
-                // Get a fresh access token — role is inside the JWT payload
+                // Get fresh access token + role from backend
                 const { accessToken, role } = await refreshTokenService(refreshToken);
 
-                // Fetch user data from backend based on role from token
+                // Fetch full user data based on role
                 let data;
                 if (role === 'developer') {
                     data = await fetchDeveloper();
@@ -33,6 +36,7 @@ const useAuthInit = () => {
             } catch {
                 dispatch(logout());
                 localStorage.removeItem('refreshToken');
+                dispatch(setInitialized());
             }
         };
 
