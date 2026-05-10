@@ -20,7 +20,7 @@ import { fetchDeveloper } from '../services/fetchService';
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/developer' },
     { label: 'Browse Jobs', icon: <Briefcase size={18} />, path: '/jobs' },
-    { label: 'Applications', icon: <CheckCircle size={18} />, path: '/dashboard/developer/applications' },
+    { label: 'My Jobs', icon: <CheckCircle size={18} />, path: '/dashboard/developer/my-jobs' },
     { label: 'Profile', icon: <User size={18} />, path: '/dashboard/developer/profile' },
     { label: 'Notifications', icon: <Bell size={18} />, path: '/dashboard/developer/notifications' },
 ];

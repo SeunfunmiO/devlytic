@@ -9,6 +9,7 @@ import RegisterDeveloper from './pages/RegisterDeveloper';
 import RegisterCompany from './pages/RegisterCompany';
 import DeveloperDashboard from './pages/DeveloperDashboard';
 import CompanyDashboard from './pages/CompanyDashboard';
+import MyJobsPage from './pages/MyJobsPage';
 
 const AppContent = () => {
   useAuthInit();
@@ -23,6 +24,7 @@ const AppContent = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register/developer" element={<RegisterDeveloper />} />
         <Route path="/register/company" element={<RegisterCompany />} />
+
 
         {/* Protected Routes */}
         <Route
@@ -42,6 +44,14 @@ const AppContent = () => {
           }
         />
       </Routes>
+      <Route
+        path="/dashboard/developer/my-jobs"
+        element={
+          <ProtectedRoute allowedRole="developer">
+            <MyJobsPage />
+          </ProtectedRoute>
+        }
+      />
     </>
   );
 };
