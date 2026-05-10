@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { setCredentials, logout, setInitialized } from '../store/authSlice';
 import { fetchDeveloper, fetchCompany } from '../services/fetchService';
 import { refreshTokenService } from '../services/authService';
+import api from '../services/api';
 
 const useAuthInit = () => {
     const dispatch = useDispatch();
@@ -20,6 +21,9 @@ const useAuthInit = () => {
                 // Get fresh access token + role from backend
                 const { accessToken, role } = await refreshTokenService(refreshToken);
 
+                // Manually set the token in axios headers before fetching user
+                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
                 // Fetch full user data based on role
                 let data;
                 if (role === 'developer') {
@@ -33,7 +37,8 @@ const useAuthInit = () => {
                     role: data.user.role,
                     accessToken,
                 }));
-            } catch {
+            } catch (error) {
+                console.error('Auth init error:', error);
                 dispatch(logout());
                 localStorage.removeItem('refreshToken');
                 dispatch(setInitialized());
