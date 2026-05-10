@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import useAuthInit from './hooks/useAuthInit';
 import ProtectedRoute from './components/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
@@ -9,9 +10,11 @@ import RegisterCompany from './pages/RegisterCompany';
 import DeveloperDashboard from './pages/DeveloperDashboard';
 import CompanyDashboard from './pages/CompanyDashboard';
 
-function App() {
+const AppContent = () => {
+  useAuthInit();
+
   return (
-    <Router>
+    <>
       <Toaster position="top-right" />
       <Routes>
         {/* Public Routes */}
@@ -39,8 +42,16 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
-}
+};
 
 export default App;
