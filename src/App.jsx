@@ -43,15 +43,15 @@ const AppContent = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/dashboard/developer/my-jobs"
+          element={
+            <ProtectedRoute allowedRole="developer">
+              <MyJobsPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      <Route
-        path="/dashboard/developer/my-jobs"
-        element={
-          <ProtectedRoute allowedRole="developer">
-            <MyJobsPage />
-          </ProtectedRoute>
-        }
-      />
     </>
   );
 };
