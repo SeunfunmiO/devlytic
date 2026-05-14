@@ -218,12 +218,12 @@ const MyJobsPage = () => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+                <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide w-full">
                     {tabs.map((tab) => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${activeTab === tab.key
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition ${activeTab === tab.key
                                     ? 'bg-indigo-600 text-white'
                                     : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-indigo-500'
                                 }`}
