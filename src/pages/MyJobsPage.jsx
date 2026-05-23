@@ -149,7 +149,7 @@ const MyJobsPage = () => {
     const currentJobs = jobsByTab[activeTab];
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white flex">
+        <div className="min-h-screen bg-gray-950 text-white flex overflow-x-hidden">
 
             {/* Sidebar — hidden on mobile */}
             <aside className="hidden lg:flex w-64 bg-gray-900 border-r border-gray-800 flex-col fixed h-full">
@@ -193,7 +193,7 @@ const MyJobsPage = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="lg:ml-64 flex-1 p-4 lg:p-8 pb-24 lg:pb-8">
+            <main className="lg:ml-64 flex-1 p-4 lg:p-8 pb-24 lg:pb-8 min-w-0 overflow-x-hidden">
 
                 {/* Mobile Top Bar */}
                 <div className="flex lg:hidden items-center justify-between mb-6">
