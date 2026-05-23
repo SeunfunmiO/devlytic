@@ -169,8 +169,8 @@ const MyJobsPage = () => {
                             key={item.label}
                             onClick={() => navigate(item.path)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition w-full text-left ${location.pathname === item.path
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                 }`}
                         >
                             {item.icon}
@@ -218,26 +218,28 @@ const MyJobsPage = () => {
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 overflow-x-auto pb-2 mb-6 scrollbar-hide w-full">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.key}
-                            onClick={() => setActiveTab(tab.key)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition ${activeTab === tab.key
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-indigo-500'
-                                }`}
-                        >
-                            {tab.icon}
-                            {tab.label}
-                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.key
-                                    ? 'bg-indigo-500 text-white'
-                                    : 'bg-gray-800 text-gray-400'
-                                }`}>
-                                {jobsByTab[tab.key].length}
-                            </span>
-                        </button>
-                    ))}
+                <div className="-mx-4 px-4 lg:mx-0 lg:px-0 overflow-x-auto pb-2 mb-6 scrollbar-hide">
+                    <div className="flex gap-2 w-max">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.key}
+                                onClick={() => setActiveTab(tab.key)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition ${activeTab === tab.key
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-indigo-500'
+                                    }`}
+                            >
+                                {tab.icon}
+                                {tab.label}
+                                <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.key
+                                        ? 'bg-indigo-500 text-white'
+                                        : 'bg-gray-800 text-gray-400'
+                                    }`}>
+                                    {jobsByTab[tab.key].length}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Tab Content */}
@@ -268,8 +270,8 @@ const MyJobsPage = () => {
                         key={item.label}
                         onClick={() => navigate(item.path)}
                         className={`flex flex-col items-center gap-1 text-xs transition px-2 ${location.pathname === item.path
-                                ? 'text-indigo-400'
-                                : 'text-gray-500 hover:text-white'
+                            ? 'text-indigo-400'
+                            : 'text-gray-500 hover:text-white'
                             }`}
                     >
                         {item.icon}
