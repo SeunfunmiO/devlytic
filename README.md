@@ -1,16 +1,80 @@
-# React + Vite
+# Devlytic
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered developer hiring marketplace that connects developers with companies through intelligent job matching.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Dual role authentication — Developer & Company (JWT + refresh tokens)
+- AI match scoring — Anthropic API scores developer fit for each role
+- Developer profiles — skills, availability, resume and portfolio links
+- Job board with filters — job type, work mode, location, skills
+- My Jobs — saved, applied, interviews and archived tabs
+- Real-time notifications via WebSockets
+- Paystack-gated featured job listings
+- Cloudinary file uploads — avatars, logos, resumes
+- Welcome emails via Nodemailer
+- Fully responsive — sidebar on desktop, bottom nav on mobile
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Frontend:** React 18, React Router v6, Redux Toolkit, Tailwind CSS, Axios, Formik, Yup, Lucide React
 
-## Expanding the ESLint configuration
+**Backend:** Node.js, Express.js, MongoDB, Mongoose, JWT, Nodemailer, Cloudinary, Paystack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Live Demo
+
+[devlytic.vercel.app](https://devlytic.vercel.app)
+
+## Getting Started
+
+### Prerequisites
+- Node.js v18+
+- MongoDB Atlas account
+- Cloudinary account
+- Gmail account with App Password
+
+### Backend Setup
+```bash
+cd devlytic-server
+npm install
+cp .env.example .env
+# Fill in your environment variables
+npm run dev
+```
+
+### Frontend Setup
+```bash
+cd devlytic-client
+npm install
+cp .env.example .env
+# Fill in your environment variables
+npm run dev
+```
+
+## Environment Variables
+
+### Server
+
+PORT=5000
+MONGO_URI=your_example
+JWT_ACCESS_SECRET=your_example
+JWT_REFRESH_SECRET=your_example
+CLIENT_URL=your_example
+CLOUDINARY_CLOUD_NAME=your_example
+CLOUDINARY_API_KEY=your_example
+CLOUDINARY_API_SECRET=your_example
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=your_example
+MAIL_PASS=your_example
+MAIL_FROM=your_example
+ANTHROPIC_API_KEY=your_example
+
+
+### Client
+
+VITE_API_URL=www.example.com
+
+## Author
+
+Cynthia Omisore — [cynthiaomisore.vercel.app](https://cynthiaomisore.vercel.app)
