@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
@@ -11,12 +11,12 @@ import {
     LogOut,
     Code2,
     Bookmark,
-    Github,
     Globe,
     Plus,
     X,
     Loader,
     Save,
+    Link2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
@@ -252,7 +252,7 @@ const DeveloperProfilePage = () => {
                         <div className="flex flex-col gap-1">
                             <label className="text-sm text-gray-300 font-medium">GitHub URL</label>
                             <div className="relative">
-                                <Github
+                                <Link2
                                     size={16}
                                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                                 />
