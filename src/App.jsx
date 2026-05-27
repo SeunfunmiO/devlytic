@@ -16,6 +16,7 @@ import PostJobPage from './pages/PostJobPage';
 import CompanyJobsPage from './pages/CompanyJobsPage';
 import DeveloperProfilePage from './pages/DeveloperProfilePage';
 import CompanyProfilePage from './pages/CompanyProfilePage';
+import EditJobPage from './pages/EditJobPage';
 
 const AppContent = () => {
   useAuthInit();
