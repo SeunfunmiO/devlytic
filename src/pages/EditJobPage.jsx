@@ -120,7 +120,7 @@ const EditJobPage = () => {
             }
         };
         fetchJob();
-    }, [id]);
+    }, [id, formik, navigate]);
 
     const inputClass = (field) =>
         `w-full bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched[field] && formik.errors[field]
@@ -186,10 +186,10 @@ const EditJobPage = () => {
                                     type="button"
                                     onClick={() => formik.setFieldValue('status', s)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium capitalize border transition ${formik.values.status === s
-                                            ? s === 'open'
-                                                ? 'bg-green-500/10 text-green-400 border-green-500/30'
-                                                : 'bg-red-500/10 text-red-400 border-red-500/30'
-                                            : 'border-gray-700 text-gray-400 hover:text-white'
+                                        ? s === 'open'
+                                            ? 'bg-green-500/10 text-green-400 border-green-500/30'
+                                            : 'bg-red-500/10 text-red-400 border-red-500/30'
+                                        : 'border-gray-700 text-gray-400 hover:text-white'
                                         }`}
                                 >
                                     {s}
@@ -263,8 +263,8 @@ const EditJobPage = () => {
                                     onBlur={formik.handleBlur}
                                     placeholder="e.g. Lagos, Nigeria or Worldwide"
                                     className={`w-full bg-gray-800 border rounded-lg pl-9 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched.location && formik.errors.location
-                                            ? 'border-red-500'
-                                            : 'border-gray-700 focus:border-indigo-500'
+                                        ? 'border-red-500'
+                                        : 'border-gray-700 focus:border-indigo-500'
                                         }`}
                                 />
                             </div>
@@ -284,8 +284,8 @@ const EditJobPage = () => {
                             onBlur={formik.handleBlur}
                             rows={8}
                             className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition resize-none ${formik.touched.description && formik.errors.description
-                                    ? 'border-red-500'
-                                    : 'border-gray-700 focus:border-indigo-500'
+                                ? 'border-red-500'
+                                : 'border-gray-700 focus:border-indigo-500'
                                 }`}
                         />
                         <div className="flex items-center justify-between">

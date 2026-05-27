@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
     LayoutDashboard,
     Briefcase,
@@ -48,7 +48,6 @@ const CompanyJobsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
-    const { user } = useSelector((state) => state.auth);
 
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
