@@ -71,6 +71,16 @@ const AppContent = () => {
             <CompanyProfilePage />
           </ProtectedRoute>
         } />
+        import EditJobPage from './pages/EditJobPage';
+
+        <Route
+          path="/dashboard/company/jobs/:id/edit"
+          element={
+            <ProtectedRoute allowedRole="company">
+              <EditJobPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

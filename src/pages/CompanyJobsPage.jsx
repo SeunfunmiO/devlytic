@@ -277,6 +277,13 @@ const CompanyJobsPage = () => {
                                             <Eye size={16} />
                                         </button>
                                         <button
+                                            onClick={() => navigate(`/dashboard/company/jobs/${job._id}/edit`)}
+                                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                            title="Edit"
+                                        >
+                                            <Pencil size={16} />
+                                        </button>
+                                        <button
                                             onClick={() => handleToggleStatus(job)}
                                             disabled={togglingId === job._id}
                                             className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
