@@ -18,9 +18,11 @@ import DeveloperProfilePage from './pages/DeveloperProfilePage';
 import CompanyProfilePage from './pages/CompanyProfilePage';
 import EditJobPage from './pages/EditJobPage';
 import CompanyApplicantsPage from './pages/CompanyApplicantsPage';
+import useSocket from './hooks/useSocket';
 
 const AppContent = () => {
   useAuthInit();
+  useSocket();
 
   return (
     <>
