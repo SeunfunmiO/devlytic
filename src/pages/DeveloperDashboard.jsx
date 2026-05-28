@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { fetchDeveloper } from '../services/fetchService';
+import NotificationBell from '../components/NotificationBell';
 
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/developer' },
@@ -114,13 +115,18 @@ const DeveloperDashboard = () => {
             {/* Sidebar — hidden on mobile */}
             <aside className="hidden lg:flex w-64 bg-gray-900 border-r border-gray-800 flex-col fixed h-full">
 
+
                 {/* Logo */}
                 <div className="px-6 py-5 border-b border-gray-800">
-                    <div className="flex items-center gap-2">
-                        <Code2 size={22} className="text-indigo-500" />
-                        <h1 className="text-xl font-bold text-white">Devlytic</h1>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Code2 size={22} className="text-indigo-500" />
+                            <h1 className="text-xl font-bold text-white">Devlytic</h1>
+                        </div>
+                        <NotificationBell />
                     </div>
                 </div>
+
 
                 {/* Nav */}
                 <nav className="flex-1 px-4 py-6 flex flex-col gap-1">
@@ -161,14 +167,16 @@ const DeveloperDashboard = () => {
                         <Code2 size={20} className="text-indigo-500" />
                         <h1 className="text-lg font-bold">Devlytic</h1>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className="text-red-400 hover:text-red-300 transition"
-                    >
-                        <LogOut size={20} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <NotificationBell />
+                        <button
+                            onClick={handleLogout}
+                            className="text-red-400 hover:text-red-300 transition"
+                        >
+                            <LogOut size={20} />
+                        </button>
+                    </div>
                 </div>
-
                 {/* Header */}
                 <div className="mb-8">
                     <h2 className="text-xl lg:text-2xl font-bold">

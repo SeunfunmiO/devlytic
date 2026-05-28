@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { fetchCompany } from '../services/fetchService';
+import NotificationBell from '../components/NotificationBell';
 
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/company' },
@@ -114,9 +115,12 @@ const CompanyDashboard = () => {
 
                 {/* Logo */}
                 <div className="px-6 py-5 border-b border-gray-800">
-                    <div className="flex items-center gap-2">
-                        <Code2 size={22} className="text-indigo-500" />
-                        <h1 className="text-xl font-bold text-white">Devlytic</h1>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Code2 size={22} className="text-indigo-500" />
+                            <h1 className="text-xl font-bold text-white">Devlytic</h1>
+                        </div>
+                        <NotificationBell />
                     </div>
                 </div>
 
@@ -159,12 +163,15 @@ const CompanyDashboard = () => {
                         <Code2 size={20} className="text-indigo-500" />
                         <h1 className="text-lg font-bold">Devlytic</h1>
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className="text-red-400 hover:text-red-300 transition"
-                    >
-                        <LogOut size={20} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <NotificationBell />
+                        <button
+                            onClick={handleLogout}
+                            className="text-red-400 hover:text-red-300 transition"
+                        >
+                            <LogOut size={20} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Header */}
