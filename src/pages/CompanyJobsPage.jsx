@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     LayoutDashboard,
     Briefcase,
@@ -19,11 +19,13 @@ import {
     CheckCircle,
     XCircle,
     Loader,
+    Star,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { getCompanyJobs, deleteJob, updateJob } from '../services/jobService';
+import { initiatePayment } from '../services/paymentService';
 
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/company' },
@@ -48,7 +50,8 @@ const CompanyJobsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
-
+    const { user } = useSelector((state) => state.auth);
+    
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [deletingId, setDeletingId] = useState(null);
@@ -110,6 +113,17 @@ const CompanyJobsPage = () => {
             localStorage.removeItem('refreshToken');
             toast.success('Logged out successfully');
             navigate('/login');
+        }
+    };
+
+    const handleFeatureJob = async (job) => {
+        try {
+            const data = await initiatePayment(job._id, user?.email);
+            if (data?.data?.authorization_url) {
+                window.location.href = data.data.authorization_url;
+            }
+        } catch {
+            toast.error('Failed to initiate payment');
         }
     };
 
@@ -276,6 +290,13 @@ const CompanyJobsPage = () => {
                                             <Eye size={16} />
                                         </button>
                                         <button
+                                            onClick={() => navigate(`/dashboard/company/jobs/${job._id}/applicants`)}
+                                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                            title="View applicants"
+                                        >
+                                            <Users size={16} />
+                                        </button>
+                                        <button
                                             onClick={() => navigate(`/dashboard/company/jobs/${job._id}/edit`)}
                                             className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
                                             title="Edit"
@@ -296,6 +317,15 @@ const CompanyJobsPage = () => {
                                                 <CheckCircle size={16} className="text-green-400" />
                                             )}
                                         </button>
+                                        {!job.isFeatured && (
+                                            <button
+                                                onClick={() => handleFeatureJob(job)}
+                                                className="p-2 text-gray-400 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition"
+                                                title="Feature this job"
+                                            >
+                                                <Star size={16} />
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => handleDelete(job._id)}
                                             disabled={deletingId === job._id}

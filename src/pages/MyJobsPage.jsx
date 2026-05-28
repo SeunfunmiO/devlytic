@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -18,6 +18,8 @@ import {
 import toast from 'react-hot-toast';
 import { logout } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
+import { getDeveloperApplications } from '../services/applicationService';
+import { getSavedJobs } from '../services/jobService';
 
 const tabs = [
     { label: 'Saved', key: 'saved', icon: <Bookmark size={16} /> },
@@ -50,8 +52,9 @@ const EmptyState = ({ icon, message, subMessage, action, actionLabel }) => (
     </div>
 );
 
-// Sample job card for when data is available
+// Job Card Data
 const JobCard = ({ job, tabKey }) => {
+    const navigate = useNavigate();
     const statusColors = {
         saved: 'bg-blue-500/10 text-blue-400',
         applied: 'bg-indigo-500/10 text-indigo-400',
@@ -66,21 +69,32 @@ const JobCard = ({ job, tabKey }) => {
         archived: 'Archived',
     };
 
+    const jobData = job.job || job;
+    const company = jobData.company;
+
     return (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-indigo-500 transition">
+        <div
+            onClick={() => navigate(`/jobs/${jobData._id}`)}
+            className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-indigo-500 transition cursor-pointer"
+        >
             <div className="flex items-start justify-between mb-3">
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${statusColors[tabKey]}`}>
                     {statusLabels[tabKey]}
                 </span>
+                {job.matchScore > 0 && (
+                    <span className="text-xs text-gray-400">
+                        Match: <span className="text-indigo-400 font-semibold">{job.matchScore}%</span>
+                    </span>
+                )}
             </div>
-            <h3 className="font-semibold text-white mb-1">{job.title}</h3>
+            <h3 className="font-semibold text-white mb-1">{jobData.title}</h3>
             <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
                 <Building2 size={14} />
-                <span>{job.company}</span>
+                <span>{company?.companyName}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-400 text-sm">
                 <MapPin size={14} />
-                <span>{job.location}</span>
+                <span>{jobData.location}</span>
             </div>
         </div>
     );
@@ -92,13 +106,35 @@ const MyJobsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // These will be replaced with real data from backend in Phase 3
-    const jobsByTab = {
+    // Jobs by Tab
+    const [jobsByTab, setJobsByTab] = useState({
         saved: [],
         applied: [],
         interviews: [],
         archived: [],
-    };
+    });
+
+    useEffect(() => {
+        const loadApplications = async () => {
+            try {
+                const [appsData, savedData] = await Promise.all([
+                    getDeveloperApplications(),
+                    getSavedJobs(),
+                ]);
+
+                const apps = appsData.applications;
+                setJobsByTab({
+                    saved: savedData.jobs,
+                    applied: apps.filter((a) => a.status === 'pending' || a.status === 'reviewed'),
+                    interviews: apps.filter((a) => a.status === 'interview'),
+                    archived: apps.filter((a) => a.status === 'archived' || a.status === 'rejected'),
+                });
+            } catch {
+                toast.error('Failed to load jobs');
+            }
+        };
+        loadApplications();
+    }, []);
 
     const handleLogout = async () => {
         try {
@@ -225,15 +261,15 @@ const MyJobsPage = () => {
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition ${activeTab === tab.key
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-indigo-500'
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-gray-900 border border-gray-800 text-gray-400 hover:text-white hover:border-indigo-500'
                                     }`}
                             >
                                 {tab.icon}
                                 {tab.label}
                                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab.key
-                                        ? 'bg-indigo-500 text-white'
-                                        : 'bg-gray-800 text-gray-400'
+                                    ? 'bg-indigo-500 text-white'
+                                    : 'bg-gray-800 text-gray-400'
                                     }`}>
                                     {jobsByTab[tab.key].length}
                                 </span>

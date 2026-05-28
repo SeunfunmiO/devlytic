@@ -17,6 +17,7 @@ import CompanyJobsPage from './pages/CompanyJobsPage';
 import DeveloperProfilePage from './pages/DeveloperProfilePage';
 import CompanyProfilePage from './pages/CompanyProfilePage';
 import EditJobPage from './pages/EditJobPage';
+import CompanyApplicantsPage from './pages/CompanyApplicantsPage';
 
 const AppContent = () => {
   useAuthInit();
@@ -79,6 +80,14 @@ const AppContent = () => {
           element={
             <ProtectedRoute allowedRole="company">
               <EditJobPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/company/jobs/:jobId/applicants"
+          element={
+            <ProtectedRoute allowedRole="company">
+              <CompanyApplicantsPage />
             </ProtectedRoute>
           }
         />
