@@ -120,7 +120,7 @@ const EditJobPage = () => {
             }
         };
         fetchJob();
-    }, [id, formik, navigate]);
+    }, [id]);
 
     const inputClass = (field) =>
         `w-full bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched[field] && formik.errors[field]
