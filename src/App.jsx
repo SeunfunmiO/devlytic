@@ -19,6 +19,8 @@ import CompanyProfilePage from './pages/CompanyProfilePage';
 import EditJobPage from './pages/EditJobPage';
 import CompanyApplicantsPage from './pages/CompanyApplicantsPage';
 import useSocket from './hooks/useSocket';
+import DeveloperNotificationsPage from './pages/DeveloperNotificationsPage';
+import CompanyNotificationsPage from './pages/CompanyNotificationsPage';
 
 const AppContent = () => {
   useAuthInit();
@@ -75,8 +77,6 @@ const AppContent = () => {
             <CompanyProfilePage />
           </ProtectedRoute>
         } />
-        import EditJobPage from './pages/EditJobPage';
-
         <Route
           path="/dashboard/company/jobs/:id/edit"
           element={
@@ -93,6 +93,17 @@ const AppContent = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/dashboard/developer/notifications" element={
+          <ProtectedRoute allowedRole="developer">
+            <DeveloperNotificationsPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/dashboard/company/notifications" element={
+          <ProtectedRoute allowedRole="company">
+            <CompanyNotificationsPage />
+          </ProtectedRoute>
+        } />
       </Routes>
     </>
   );
