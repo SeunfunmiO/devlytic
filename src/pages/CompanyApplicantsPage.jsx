@@ -10,7 +10,6 @@ import {
     Code2,
     Building2,
     ArrowLeft,
-    Github,
     Globe,
     CheckCircle,
     XCircle,
@@ -19,6 +18,7 @@ import {
     Loader,
     ChevronDown,
     ChevronUp,
+    Link2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout } from '../store/authSlice';
@@ -253,7 +253,7 @@ const CompanyApplicantsPage = () => {
                                                             rel="noreferrer"
                                                             className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition"
                                                         >
-                                                            <Github size={12} /> GitHub
+                                                            <Link2 size={12} /> GitHub
                                                         </a>
                                                     )}
                                                     {app.developer?.portfolioUrl && (
