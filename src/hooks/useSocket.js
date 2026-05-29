@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
 import toast from 'react-hot-toast';
 import { addNotification } from '../store/notificationSlice';
-import { Bell } from 'lucide-react';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
@@ -29,7 +28,7 @@ const useSocket = () => {
         socket.on('notification', (notification) => {
             dispatch(addNotification(notification));
             toast(notification.message, {
-                icon: <Bell size={14} />,
+                icon: '🔔',
                 duration: 4000,
                 style: {
                     background: '#1f2937',
