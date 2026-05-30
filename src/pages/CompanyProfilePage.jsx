@@ -13,11 +13,14 @@ import {
   Globe,
   Loader,
   Save,
+  UploadCloud,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { updateCompanyProfile } from '../services/profileService';
+import { useState } from 'react';
+import { uploadLogo } from '../services/uploadService';
 
 const navItems = [
   { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/company' },
@@ -52,6 +55,27 @@ const CompanyProfilePage = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      setUploadingLogo(true);
+      const data = await uploadLogo(file);
+      dispatch(setCredentials({
+        user: data.user,
+        role: data.user.role,
+        accessToken: null,
+      }));
+      toast.success('Logo updated successfully');
+    } catch {
+      toast.error('Failed to upload logo');
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -168,6 +192,39 @@ const CompanyProfilePage = () => {
             <div className="flex items-center gap-2 mb-1">
               <Building2 size={18} className="text-indigo-400" />
               <h3 className="font-semibold">Basic Information</h3>
+            </div>
+
+
+            {/* Logo Upload */}
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+              <h3 className="font-semibold mb-4">Company Logo</h3>
+              <div className="flex items-center gap-5">
+                <div className="w-20 h-20 rounded-xl bg-indigo-600/20 border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {user?.logo ? (
+                    <img
+                      src={user.logo}
+                      alt="Logo"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Building2 size={32} className="text-indigo-400" />
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-sm font-medium px-4 py-2 rounded-lg cursor-pointer transition">
+                    <UploadCloud size={16} />
+                    {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleLogoUpload}
+                      disabled={uploadingLogo}
+                    />
+                  </label>
+                  <p className="text-xs text-gray-500">JPG, PNG or WEBP. Max 5MB.</p>
+                </div>
+              </div>
             </div>
 
             {/* Company Name */}
