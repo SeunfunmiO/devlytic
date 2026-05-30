@@ -48,7 +48,7 @@ const JobDetailPage = () => {
             }
         };
         fetchJob();
-    }, [id,navigate]);
+    }, [id]);
 
     const handleSave = async () => {
         if (!isAuthenticated || role !== 'developer') return navigate('/login');
