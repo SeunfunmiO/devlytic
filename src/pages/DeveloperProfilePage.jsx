@@ -17,11 +17,14 @@ import {
     Loader,
     Save,
     Link2,
+    UploadCloud,
+    FileText,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { updateDeveloperProfile } from '../services/profileService';
+import { uploadAvatar, uploadResume } from '../services/uploadService';
 
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/developer' },
@@ -57,6 +60,47 @@ const DeveloperProfilePage = () => {
 
     const removeSkill = (skill) => {
         setSkills(skills.filter((s) => s !== skill));
+    };
+
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
+    const [uploadingResume, setUploadingResume] = useState(false);
+
+    const handleAvatarUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            setUploadingAvatar(true);
+            const data = await uploadAvatar(file);
+            dispatch(setCredentials({
+                user: data.user,
+                role: data.user.role,
+                accessToken: null,
+            }));
+            toast.success('Photo updated successfully');
+        } catch {
+            toast.error('Failed to upload photo');
+        } finally {
+            setUploadingAvatar(false);
+        }
+    };
+
+    const handleResumeUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+            setUploadingResume(true);
+            const data = await uploadResume(file);
+            dispatch(setCredentials({
+                user: data.user,
+                role: data.user.role,
+                accessToken: null,
+            }));
+            toast.success('Resume uploaded successfully');
+        } catch {
+            toast.error('Failed to upload resume');
+        } finally {
+            setUploadingResume(false);
+        }
     };
 
     const formik = useFormik({
@@ -132,8 +176,8 @@ const DeveloperProfilePage = () => {
                             key={item.label}
                             onClick={() => navigate(item.path)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition w-full text-left ${location.pathname === item.path
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                 }`}
                         >
                             {item.icon}
@@ -186,8 +230,8 @@ const DeveloperProfilePage = () => {
                                     type="button"
                                     onClick={() => formik.setFieldValue('availabilityStatus', status)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium border capitalize transition ${formik.values.availabilityStatus === status
-                                            ? availabilityColors[status]
-                                            : 'border-gray-700 text-gray-400 hover:text-white'
+                                        ? availabilityColors[status]
+                                        : 'border-gray-700 text-gray-400 hover:text-white'
                                         }`}
                                 >
                                     {status}
@@ -199,6 +243,69 @@ const DeveloperProfilePage = () => {
                     {/* Basic Info */}
                     <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col gap-5">
                         <h3 className="font-semibold">Basic Information</h3>
+
+                        {/* Avatar Upload */}
+                        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                            <h3 className="font-semibold mb-4">Profile Photo</h3>
+                            <div className="flex items-center gap-5">
+                                <div className="w-20 h-20 rounded-full bg-indigo-600/20 border-2 border-indigo-500/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                    {user?.avatar ? (
+                                        <img
+                                            src={user.avatar}
+                                            alt="Avatar"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <User size={32} className="text-indigo-400" />
+                                    )}
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-sm font-medium px-4 py-2 rounded-lg cursor-pointer transition">
+                                        <UploadCloud size={16} />
+                                        {uploadingAvatar ? 'Uploading...' : 'Upload Photo'}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleAvatarUpload}
+                                            disabled={uploadingAvatar}
+                                        />
+                                    </label>
+                                    <p className="text-xs text-gray-500">JPG, PNG or WEBP. Max 5MB.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Resume Upload */}
+                        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                            <h3 className="font-semibold mb-4">Resume</h3>
+                            <div className="flex items-center gap-4">
+                                {user?.resumeUrl ? (
+                                    <a
+                                        href={user.resumeUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 text-sm transition"
+                                    >
+                                        <FileText size={16} /> View current resume
+                                    </a>
+                                ) : (
+                                    <p className="text-gray-500 text-sm">No resume uploaded yet</p>
+                                )}
+                                <label className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 text-sm font-medium px-4 py-2 rounded-lg cursor-pointer transition">
+                                    <UploadCloud size={16} />
+                                    {uploadingResume ? 'Uploading...' : user?.resumeUrl ? 'Replace Resume' : 'Upload Resume'}
+                                    <input
+                                        type="file"
+                                        accept=".pdf"
+                                        className="hidden"
+                                        onChange={handleResumeUpload}
+                                        disabled={uploadingResume}
+                                    />
+                                </label>
+                                <p className="text-xs text-gray-500">PDF only. Max 10MB.</p>
+                            </div>
+                        </div>
 
                         {/* Full Name */}
                         <div className="flex flex-col gap-1">
@@ -228,8 +335,8 @@ const DeveloperProfilePage = () => {
                                 placeholder="Tell companies a bit about yourself, your experience and what you are looking for..."
                                 rows={4}
                                 className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition resize-none ${formik.touched.bio && formik.errors.bio
-                                        ? 'border-red-500'
-                                        : 'border-gray-700 focus:border-indigo-500'
+                                    ? 'border-red-500'
+                                    : 'border-gray-700 focus:border-indigo-500'
                                     }`}
                             />
                             <div className="flex items-center justify-between mt-1">
@@ -264,8 +371,8 @@ const DeveloperProfilePage = () => {
                                     onBlur={formik.handleBlur}
                                     placeholder="https://github.com/username"
                                     className={`w-full bg-gray-800 border rounded-lg pl-9 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched.githubUrl && formik.errors.githubUrl
-                                            ? 'border-red-500'
-                                            : 'border-gray-700 focus:border-indigo-500'
+                                        ? 'border-red-500'
+                                        : 'border-gray-700 focus:border-indigo-500'
                                         }`}
                                 />
                             </div>
@@ -290,8 +397,8 @@ const DeveloperProfilePage = () => {
                                     onBlur={formik.handleBlur}
                                     placeholder="https://yourportfolio.com"
                                     className={`w-full bg-gray-800 border rounded-lg pl-9 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none transition ${formik.touched.portfolioUrl && formik.errors.portfolioUrl
-                                            ? 'border-red-500'
-                                            : 'border-gray-700 focus:border-indigo-500'
+                                        ? 'border-red-500'
+                                        : 'border-gray-700 focus:border-indigo-500'
                                         }`}
                                 />
                             </div>
@@ -372,8 +479,8 @@ const DeveloperProfilePage = () => {
                         key={item.label}
                         onClick={() => navigate(item.path)}
                         className={`flex flex-col items-center gap-1 text-xs transition px-2 ${location.pathname === item.path
-                                ? 'text-indigo-400'
-                                : 'text-gray-500 hover:text-white'
+                            ? 'text-indigo-400'
+                            : 'text-gray-500 hover:text-white'
                             }`}
                     >
                         {item.icon}
