@@ -276,6 +276,23 @@ const DeveloperProfilePage = () => {
                             </div>
                         </div>
 
+                        {/* Full Name */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-sm text-gray-300 font-medium">Full Name</label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                value={formik.values.fullName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                placeholder="Your full name"
+                                className={inputClass('fullName')}
+                            />
+                            {formik.touched.fullName && formik.errors.fullName && (
+                                <p className="text-red-400 text-xs mt-1">{formik.errors.fullName}</p>
+                            )}
+                        </div>
+
                         {/* Resume Upload */}
                         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                             <h3 className="font-semibold mb-4">Resume</h3>
@@ -305,23 +322,6 @@ const DeveloperProfilePage = () => {
                                 </label>
                                 <p className="text-xs text-gray-500">PDF only. Max 10MB.</p>
                             </div>
-                        </div>
-
-                        {/* Full Name */}
-                        <div className="flex flex-col gap-1">
-                            <label className="text-sm text-gray-300 font-medium">Full Name</label>
-                            <input
-                                type="text"
-                                name="fullName"
-                                value={formik.values.fullName}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                placeholder="Your full name"
-                                className={inputClass('fullName')}
-                            />
-                            {formik.touched.fullName && formik.errors.fullName && (
-                                <p className="text-red-400 text-xs mt-1">{formik.errors.fullName}</p>
-                            )}
                         </div>
 
                         {/* Bio */}

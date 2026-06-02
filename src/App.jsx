@@ -21,6 +21,7 @@ import CompanyApplicantsPage from './pages/CompanyApplicantsPage';
 import useSocket from './hooks/useSocket';
 import DeveloperNotificationsPage from './pages/DeveloperNotificationsPage';
 import CompanyNotificationsPage from './pages/CompanyNotificationsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const AppContent = () => {
   useAuthInit();
@@ -104,6 +105,10 @@ const AppContent = () => {
             <CompanyNotificationsPage />
           </ProtectedRoute>
         } />
+
+
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );
