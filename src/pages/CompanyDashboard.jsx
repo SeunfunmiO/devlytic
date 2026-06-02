@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -12,12 +12,22 @@ import {
     Building2,
     CheckCircle,
     Clock,
+    MapPin,
+    Globe,
+    Eye,
+    Pencil,
+    Loader,
+    XCircle,
+    Star,
+    Trash2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { logout, setCredentials } from '../store/authSlice';
 import { logoutUser } from '../services/authService';
 import { fetchCompany } from '../services/fetchService';
 import NotificationBell from '../components/NotificationBell';
+import { deleteJob, getCompanyJobs, updateJob } from '../services/jobService';
+import { initiatePayment } from '../services/paymentService';
 
 const navItems = [
     { label: 'Dashboard', icon: <LayoutDashboard size={18} />, path: '/dashboard/company' },
@@ -26,6 +36,17 @@ const navItems = [
     { label: 'Profile', icon: <Building2 size={18} />, path: '/dashboard/company/profile' },
     { label: 'Notifications', icon: <Bell size={18} />, path: '/dashboard/company/notifications' },
 ];
+
+const statusColors = {
+    open: 'bg-green-500/10 text-green-400',
+    closed: 'bg-red-500/10 text-red-400',
+};
+
+const workModeColors = {
+    remote: 'bg-green-500/10 text-green-400',
+    hybrid: 'bg-blue-500/10 text-blue-400',
+    onsite: 'bg-yellow-500/10 text-yellow-400',
+};
 
 const calculateProfileCompletion = (user) => {
     if (!user) return 0;
@@ -47,6 +68,11 @@ const CompanyDashboard = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [deletingId, setDeletingId] = useState(null);
+    const [togglingId, setTogglingId] = useState(null);
+
     // Fetch company details on mount
     useEffect(() => {
         const loadCompany = async () => {
@@ -63,6 +89,66 @@ const CompanyDashboard = () => {
         };
         if (!user?.companyName) loadCompany();
     }, []);
+
+    //fetch jobs
+    useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                setLoading(true);
+                const data = await getCompanyJobs();
+                setJobs(data.jobs);
+            } catch {
+                toast.error('Failed to load jobs');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchJobs();
+    }, []);
+
+
+    const handleFeatureJob = async (job) => {
+        try {
+            const data = await initiatePayment(job._id, user?.email);
+            if (data?.data?.authorization_url) {
+                window.location.href = data.data.authorization_url;
+            }
+        } catch {
+            toast.error('Failed to initiate payment');
+        }
+    };
+
+    const handleDelete = async (jobId) => {
+        if (!window.confirm('Are you sure you want to delete this job?')) return; 
+        //delete modal
+        try {
+            setDeletingId(jobId);
+            await deleteJob(jobId);
+            setJobs(jobs.filter((j) => j._id !== jobId));
+            toast.success('Job deleted successfully');
+        } catch {
+            toast.error('Failed to delete job');
+        } finally {
+            setDeletingId(null);
+        }
+    };
+
+    const handleToggleStatus = async (job) => {
+        try {
+            setTogglingId(job._id);
+            const newStatus = job.status === 'open' ? 'closed' : 'open';
+            await updateJob(job._id, { status: newStatus });
+            setJobs(jobs.map((j) =>
+                j._id === job._id ? { ...j, status: newStatus } : j
+            ));
+            toast.success(`Job ${newStatus === 'open' ? 'reopened' : 'closed'}`);
+        } catch {
+            toast.error('Failed to update job status');
+        } finally {
+            setTogglingId(null);
+        }
+    };
+
 
     const handleLogout = async () => {
         try {
@@ -131,8 +217,8 @@ const CompanyDashboard = () => {
                             key={item.label}
                             onClick={() => navigate(item.path)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition w-full text-left ${location.pathname === item.path
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800'
                                 }`}
                         >
                             {item.icon}
@@ -222,17 +308,157 @@ const CompanyDashboard = () => {
                             View all
                         </button>
                     </div>
-                    <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-                        <Briefcase size={36} className="mb-3 text-gray-700" />
-                        <p className="text-sm">No jobs posted yet</p>
-                        <button
-                            onClick={() => navigate('/dashboard/company/jobs/new')}
-                            className="mt-4 flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition"
-                        >
-                            <Plus size={16} />
-                            Post your first job
-                        </button>
-                    </div>
+
+                    {/* Jobs List */}
+                    {loading ? (
+                        <div className="flex flex-col gap-4">
+                            {[...Array(3)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="bg-gray-900 border border-gray-800 rounded-xl p-5 animate-pulse"
+                                >
+                                    <div className="h-4 bg-gray-800 rounded w-1/3 mb-3" />
+                                    <div className="h-3 bg-gray-800 rounded w-1/4 mb-4" />
+                                    <div className="flex gap-2">
+                                        <div className="h-6 bg-gray-800 rounded-full w-16" />
+                                        <div className="h-6 bg-gray-800 rounded-full w-16" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : jobs.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-10 text-gray-500">
+                            <Briefcase size={36} className="mb-3 text-gray-700" />
+                            <p className="text-sm">No jobs posted yet</p>
+                            <button
+                                onClick={() => navigate('/dashboard/company/jobs/new')}
+                                className="mt-4 flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition"
+                            >
+                                <Plus size={16} />
+                                Post your first job
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-4">
+                            {jobs.slice(0, 3).map((job) => (
+                                <div
+                                    key={job._id}
+                                    className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition"
+                                >
+                                    <div className="flex items-start justify-between gap-4 flex-col md:flex-row">
+                                        <div className="flex-1 min-w-0">
+
+                                            {/* Title + Status */}
+                                            <div className="flex items-center gap-3 mb-1 flex-wrap">
+                                                <h3 className="font-semibold text-white">{job.title}</h3>
+                                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium capitalize ${statusColors[job.status]}`}>
+                                                    {job.status}
+                                                </span>
+                                                {job.isFeatured && (
+                                                    <span className="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded-full font-medium">
+                                                        Featured
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Meta */}
+                                            <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 mb-3">
+                                                {job.location && (
+                                                    <span className="flex items-center gap-1">
+                                                        <MapPin size={12} /> {job.location}
+                                                    </span>
+                                                )}
+                                                <span className="flex items-center gap-1">
+                                                    <Globe size={12} />
+                                                    <span className="capitalize">{job.workMode}</span>
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Clock size={12} />
+                                                    {new Date(job.createdAt).toLocaleDateString()}
+                                                </span>
+                                                <span className="flex items-center gap-1">
+                                                    <Users size={12} />
+                                                    {job.applicants?.length || 0} applicant{job.applicants?.length !== 1 ? 's' : ''}
+                                                </span>
+                                            </div>
+
+                                            {/* Badges */}
+                                            <div className="flex flex-wrap gap-2">
+                                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${workModeColors[job.workMode]}`}>
+                                                    {job.workMode}
+                                                </span>
+                                                <span className="px-2 py-0.5 rounded-full text-xs font-medium capitalize bg-indigo-500/10 text-indigo-400">
+                                                    {job.jobType}
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="flex items-center gap-2 flex-shrink-0">
+                                            <button
+                                                onClick={() => navigate(`/jobs/${job._id}`)}
+                                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                                title="View"
+                                            >
+                                                <Eye size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => navigate(`/dashboard/company/jobs/${job._id}/applicants`)}
+                                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                                title="View applicants"
+                                            >
+                                                <Users size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => navigate(`/dashboard/company/jobs/${job._id}/edit`)}
+                                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                                title="Edit"
+                                            >
+                                                <Pencil size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleToggleStatus(job)}
+                                                disabled={togglingId === job._id}
+                                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition"
+                                                title={job.status === 'open' ? 'Close job' : 'Reopen job'}
+                                            >
+                                                {togglingId === job._id ? (
+                                                    <Loader size={16} className="animate-spin" />
+                                                ) : job.status === 'open' ? (
+                                                    <XCircle size={16} className="text-red-400" />
+                                                ) : (
+                                                    <CheckCircle size={16} className="text-green-400" />
+                                                )}
+                                            </button>
+                                            {!job.isFeatured && (
+                                                <button
+                                                    onClick={() => handleFeatureJob(job)}
+                                                    className="p-2 text-gray-400 hover:text-yellow-400 hover:bg-yellow-500/10 rounded-lg transition"
+                                                    title="Feature this job"
+                                                >
+                                                    <Star size={16} />
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDelete(job._id)}
+                                                disabled={deletingId === job._id}
+                                                className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition"
+                                                title="Delete"
+                                            >
+                                                {deletingId === job._id ? (
+                                                    <Loader size={16} className="animate-spin" />
+                                                ) : (
+                                                    <Trash2 size={16} />
+                                                )}
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Recent Applicants */}
@@ -288,8 +514,8 @@ const CompanyDashboard = () => {
                         key={item.label}
                         onClick={() => navigate(item.path)}
                         className={`flex flex-col items-center gap-1 text-xs transition px-2 ${location.pathname === item.path
-                                ? 'text-indigo-400'
-                                : 'text-gray-500 hover:text-white'
+                            ? 'text-indigo-400'
+                            : 'text-gray-500 hover:text-white'
                             }`}
                     >
                         {item.icon}
