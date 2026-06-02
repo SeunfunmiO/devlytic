@@ -231,7 +231,7 @@ const CompanyJobsPage = () => {
                                 key={job._id}
                                 className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition"
                             >
-                                <div className="flex items-start justify-between gap-4">
+                                <div className="flex items-start justify-between gap-4 flex-wrap">
                                     <div className="flex-1 min-w-0">
 
                                         {/* Title + Status */}
