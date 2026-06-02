@@ -15,6 +15,8 @@ import {
     Send,
     X,
     Loader,
+    FileText,
+    AlertCircle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getJobById, toggleSaveJob } from '../services/jobService';
@@ -23,8 +25,8 @@ import { applyToJob } from '../services/applicationService';
 const JobDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { isAuthenticated, role } = useSelector((state) => state.auth);
-
+    const { isAuthenticated, role,user } = useSelector((state) => state.auth);
+    
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saved, setSaved] = useState(false);
@@ -323,11 +325,11 @@ const JobDetailPage = () => {
                             )}
                             {job.company?.website && (
                                 <a
-                                    href = {job.company.website}
+                                    href={job.company.website}
                                     target="_blank"
                                     rel="noreferrer"
                                     className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 text-xs mt-3 transition"
-                >
+                                >
                                     <Globe size={12} /> Visit website
                                 </a>
                             )}
@@ -338,59 +340,99 @@ const JobDetailPage = () => {
             </div>
 
             {/* Apply Modal */}
-            {
-                showApplyModal && (
-                    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-                        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 w-full max-w-lg">
-                            <div className="flex items-center justify-between mb-5">
-                                <h3 className="font-bold text-lg">Apply for {job.title}</h3>
-                                <button
-                                    onClick={() => setShowApplyModal(false)}
-                                    className="text-gray-400 hover:text-white transition"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <div className="mb-5">
-                                <label className="text-sm text-gray-300 font-medium mb-2 block">
-                                    Cover Letter <span className="text-gray-500">(optional)</span>
-                                </label>
-                                <textarea
-                                    value={coverLetter}
-                                    onChange={(e) => setCoverLetter(e.target.value)}
-                                    placeholder="Tell the company why you are a great fit for this role..."
-                                    rows={5}
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition resize-none"
-                                />
-                            </div>
-
-                            <div className="flex gap-3">
-                                <button
-                                    onClick={() => setShowApplyModal(false)}
-                                    className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-medium py-3 rounded-lg transition text-sm"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSubmitApplication}
-                                    disabled={submitting}
-                                    className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition text-sm"
-                                >
-                                    {submitting ? (
-                                        <>
-                                            <Loader size={16} className="animate-spin" /> Submitting...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Send size={16} /> Submit Application
-                                        </>
-                                    )}
-                                </button>
-                            </div>
+            {showApplyModal && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+                    <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 w-full max-w-lg">
+                        <div className="flex items-center justify-between mb-5">
+                            <h3 className="font-bold text-lg">Apply for {job.title}</h3>
+                            <button
+                                onClick={() => setShowApplyModal(false)}
+                                className="text-gray-400 hover:text-white transition"
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
+
+                        {/* Resume Section */}
+                        <div className="mb-5">
+                            <label className="text-sm text-gray-300 font-medium mb-2 block">
+                                Resume
+                            </label>
+                            {user?.resumeUrl ? (
+                                <div className="flex items-center justify-between bg-gray-800 border border-gray-700 rounded-lg px-4 py-3">
+                                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                                        <FileText size={16} className="text-indigo-400" />
+                                        <span>Your uploaded resume will be attached</span>
+                                    </div>
+                                    <a
+                                        href={user.resumeUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-xs text-indigo-400 hover:text-indigo-300 transition"
+                                    >
+                                        Preview
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="flex items-center justify-between bg-gray-800 border border-yellow-500/30 rounded-lg px-4 py-3">
+                                    <div className="flex items-center gap-2 text-sm text-yellow-400">
+                                        <AlertCircle size={16} />
+                                        <span>No resume uploaded yet</span>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setShowApplyModal(false);
+                                            navigate('/dashboard/developer/profile');
+                                        }}
+                                        className="text-xs text-indigo-400 hover:text-indigo-300 transition"
+                                    >
+                                        Upload now
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Cover Letter */}
+                        <div className="mb-5">
+                            <label className="text-sm text-gray-300 font-medium mb-2 block">
+                                Cover Letter <span className="text-gray-500">(optional)</span>
+                            </label>
+                            <textarea
+                                value={coverLetter}
+                                onChange={(e) => setCoverLetter(e.target.value)}
+                                placeholder="Tell the company why you are a great fit for this role..."
+                                rows={5}
+                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition resize-none"
+                            />
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowApplyModal(false)}
+                                className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-medium py-3 rounded-lg transition text-sm"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSubmitApplication}
+                                disabled={submitting}
+                                className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition text-sm"
+                            >
+                                {submitting ? (
+                                    <>
+                                        <Loader size={16} className="animate-spin" /> Submitting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Send size={16} /> Submit Application
+                                    </>
+                                )}
+                            </button>
+                        </div>
+
                     </div>
-                )
+                </div>
+            )
             }
 
         </div >
